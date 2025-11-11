@@ -12,19 +12,19 @@
 {% block content %}
 <div class="halloween-page">
   <div class="overlay">
-    <h1 class="event-title">Evento estelar<br><em>El Baile de las Sombras</em></h1>
+    <h1 class="event-title">Evento estelar<br><em>Noche de Estrellas Navideñas</em></h1>
 
     <div class="button-group">
       {% if not user.is_authenticated %}
         <a href="{% url 'register_assistant' %}" class="register-button">Registrarse</a>
       {% else %}
         <p class="text-white text-lg mt-4 text-center">
-          ¡Hola {{ user.first_name|default:user.username }}! Ya estás listo para disfrutar el evento 🎉
+          ¡Hola {{ user.first_name|default:user.username }}! Ya estás listo para disfrutar el evento 
         </p>
       {% endif %}
     </div>
 
-    <h2 class="countdown-title">Days to Halloween</h2>
+    <h2 class="countdown-title">Dias para Navidad</h2>
     <div class="flip-clock">
       <div class="flip-unit" id="days">
         <span class="label">Días</span>
@@ -49,7 +49,7 @@
 
 {% block extra_js %}
 <script>
-  const halloween = new Date("October 31, 2025 00:00:00").getTime();
+  const halloween = new Date("December 25, 2025 00:00:00").getTime();
   function updateClock() {
     const now = new Date().getTime();
     const distance = halloween - now;

@@ -1,0 +1,195 @@
+/* Container */
+.croquis-formal {
+  background: #121316;
+  color: #e6e7ea;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #1b1c20;
+}
+
+.croquis-titulo {
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #bfc2c7;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* Grid layout */
+.croquis-grid {
+  display: grid;
+  grid-template-areas:
+    "dj    dj     dj"
+    "barra centro vip"
+    "entrada entrada entrada";
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+}
+
+/* Zones */
+.zona {
+  background: #17181c;
+  border: 1px solid #22242a;
+  border-radius: 10px;
+  padding: 12px;
+  position: relative;
+}
+
+.zona-header {
+  font-size: 0.9rem;
+  color: #9aa0a6;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* Area assignment */
+.zona-dj { grid-area: dj; min-height: 80px; }
+.zona-barra { grid-area: barra; min-height: 200px; }
+.zona-centro { grid-area: centro; min-height: 350px; }
+.zona-vip { grid-area: vip; min-height: 200px; }
+.zona-entrada { grid-area: entrada; min-height: 100px; }
+
+/* Dance floor */
+.pista-baile {
+  background: #0e0f12;
+  border: 1px solid #2b2d33;
+  border-radius: 12px;
+  color: #bfc2c7;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  padding: 40px 12px;
+  margin: 100px auto 0 auto; /* ← esto empuja hacia abajo */
+  width: clamp(180px, 60%, 380px);
+}
+
+/* Points containers around the piste (U shape) */
+.puntos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.puntos-top {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.puntos-left {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 96px;
+}
+
+.puntos-right {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 96px;
+}
+
+.puntos-bottom {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+
+/* Points (interactive) */
+.punto {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid #2f3137;
+  background: #1b1c20;
+  cursor: pointer;
+  position: relative;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.punto:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.06);
+}
+
+/* States */
+.punto.disponible { background: #97e0a7; }
+.punto.vendido { background: #707070; }
+
+/* Tooltip (pure CSS) */
+.punto::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f1013;
+  color: #cdd1d6;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  border: 1px solid #272a30;
+  transition: opacity 120ms ease;
+}
+
+.punto:hover::after { opacity: 1; }
+
+/* Legend / counters */
+.croquis-stats {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  color: #a9afb6;
+  font-size: 0.9rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  border: 1px solid #2f3137;
+}
+
+.dot-disponible { background: #181a1e; }
+.dot-vendido { background: #2a2c31; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .croquis-grid {
+    grid-template-areas:
+      "dj"
+      "centro"
+      "barra"
+      "vip"
+      "entrada";
+    grid-template-columns: 1fr;
+  }
+  .pista-baile { width: 80%; }
+  .puntos-left, .puntos-right { width: 72px; grid-template-columns: 1fr; }
+  }

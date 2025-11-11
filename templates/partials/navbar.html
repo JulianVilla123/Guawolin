@@ -9,7 +9,7 @@
       <!-- Navegación -->
       <div class="flex space-x-6 items-center">
         {% if not user.is_authenticated %}
-          <a href="{% url 'events' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Eventos</a>
+          <a href="{% url 'events' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Como Usar Fiestapp</a>
           <a href="{% url 'register_assistant' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Registro de Asistentes</a>
           <a href="{% url 'register_organizer' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">¿Quieres ser Organizador?</a>
           <a href="{% url 'login' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Iniciar sesión</a>
