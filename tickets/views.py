@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from .forms import RegisterAssistantForm, RegisterOrganizerForm
 from django.contrib.auth.models import Group
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout
 from tickets import views
 from tickets.forms import EventoForm
@@ -14,7 +14,9 @@ from django.http import HttpResponse
 from tickets.decoradores import solo_organizadores
 from tickets.decoradores import solo_asistentes
 from django.shortcuts import get_object_or_404 #detalle de evento
-from django.contrib import messages #eliminar evento
+from django.contrib import messages #eliminar eventos
+from django.db.models import Q
+
 
 
 def home(request):
@@ -201,7 +203,19 @@ def comprar_boleto(request, evento_id):
         return redirect('eventos_disponibles')
     return render(request, 'eventos/confirmar_compra.html', {'evento': evento})
 
+def es_organizador_o_asistente(user):
+    return getattr(user, "rol", None) in ["organizador", "asistente"]
 
+@login_required
+@user_passes_test(es_organizador_o_asistente)
+def buscar_evento(request):
+    query = request.GET.get("q")
+    resultados = Evento.objects.filter(
+        Q(titulo__icontains=query) |
+        Q(lugar__icontains=query) |
+        Q(descripcion__icontains=query)
+    ) if query else []
+    return render(request, "eventos/buscar_evento.html", {"resultados": resultados})
 
 
     

@@ -1,0 +1,67 @@
+body.dashboard-page {
+  background: linear-gradient(to bottom, #111, #000);
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.titulo-dashboard {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #ffd700;
+  margin: 40px 0 20px;
+}
+
+.eventos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 0 30px;
+}
+
+.tarjeta-evento {
+  background-color: #222;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.tarjeta-evento:hover {
+  transform: scale(1.02);
+}
+
+.imagen-evento {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.acciones {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-editar,
+.btn-eliminar {
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn-editar {
+  background-color: #ffd700;
+  color: #000;
+}
+
+.btn-eliminar {
+  background-color: #ff4d4d;
+  color: #fff;
+}
+
+.sin-eventos {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #aaa;
+}

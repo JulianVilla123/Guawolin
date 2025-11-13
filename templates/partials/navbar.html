@@ -24,6 +24,18 @@
           <a href="{% url 'reports' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Reportes</a>
         {% endif %}
 
+
+<!-- Barra de búsqueda -->
+{% if user.is_authenticated and user.rol in "organizador asistente" %}
+  <form method="get" action="{% url 'buscar_evento' %}" class="flex items-center">
+    <input type="text" name="q" placeholder="Buscar evento..."
+           class="border rounded px-2 py-1 focus:outline-none focus:ring focus:border-indigo-300"/>
+    <button type="submit" class="ml-2 bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-800">
+      Buscar
+    </button>
+  </form>
+{% endif %}
+
         <!-- Dropdown de perfil -->
         {% if user.is_authenticated %}
           <div class="relative">

@@ -1,0 +1,88 @@
+/* Contenedor principal */
+.resultados-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Título */
+.resultados-title {
+  grid-column: 1 / -1;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #4f46e5; /* Indigo-600 */
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Tarjeta de evento */
+.event-card {
+  background: linear-gradient(135deg, #ffffff, #f9fafb);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Hover animado */
+.event-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+/* Título del evento */
+.event-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+/* Fecha y lugar */
+.event-meta {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* Descripción */
+.event-description {
+  font-size: 0.9rem;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+/* Botón de acción */
+.event-card a {
+  text-decoration: none;
+  background-color: #4f46e5;
+  color: #ffffff;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+.event-card a:hover {
+  background-color: #3730a3;
+}
+
+/* Mensaje sin resultados */
+.no-resultados {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #9ca3af;
+  margin-top: 2rem;
+}
