@@ -2,10 +2,22 @@
 {% block title %}Detalle del Evento{% endblock %}
 
 {% block content %}
+ <div class="evento-card">
   <h2 class="evento-titulo">{{ evento.titulo }}</h2>
-  <p><strong>Descripción:</strong> {{ evento.descripcion }}</p>
-  <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
-  <p><strong>Lugar:</strong> {{ evento.lugar }}</p>
+  
+  <div class="evento-info">
+    <p class="evento-descripcion">
+      <span class="icon">📝</span> {{ evento.descripcion }}
+    </p>
+    <p class="evento-fecha">
+      <span class="icon">📅</span> {{ evento.fecha }}
+    </p>
+    <p class="evento-lugar">
+      <span class="icon">📍</span> {{ evento.lugar }}
+    </p>
+  </div>
+</div>
+
 
 <section class="croquis-formal">
   <h2 class="croquis-titulo">Croquis del evento</h2>
