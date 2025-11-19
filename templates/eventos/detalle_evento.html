@@ -2,13 +2,117 @@
 {% block title %}Detalle del Evento{% endblock %}
 
 {% block content %}
-  <h2>{{ evento.titulo }}</h2>
-  <p><strong>Descripción:</strong> {{ evento.descripcion }}</p>
-  <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
-  <p><strong>Lugar:</strong> {{ evento.lugar }}</p>
+ <div class="evento-card">
+  <h2 class="evento-titulo">{{ evento.titulo }}</h2>
+  
+  <div class="evento-info">
+    <p class="evento-descripcion">
+      <span class="icon">📝</span> {{ evento.descripcion }}
+    </p>
+    <p class="evento-fecha">
+      <span class="icon">📅</span> {{ evento.fecha }}
+    </p>
+    <p class="evento-lugar">
+      <span class="icon">📍</span> {{ evento.lugar }}
+    </p>
+  </div>
+</div>
+
+
+<section class="croquis-formal">
+  <h2 class="croquis-titulo">Croquis del evento</h2>
+
+  <div class="croquis-grid">
+    <!-- DJ Booth -->
+    <div class="zona zona-dj" data-label="DJ Booth">
+      <div class="zona-header">Zona del DJ</div>
+      <div class="puntos" id="puntos-dj"></div>
+    </div>
+
+    <!-- Left (Barra) -->
+    <div class="zona zona-barra" data-label="Barra">
+      <div class="zona-header">Barra</div>
+      <div class="puntos" id="puntos-barra"></div>
+    </div>
+
+    <!-- Center (Pista + asistentes alrededor en U) -->
+    <div class="zona zona-centro" data-label="Área central">
+      <div class="pista-baile">Pista de baile</div>
+
+      <!-- Puntos alrededor (top / left / right) -->
+      <div class="puntos puntos-top" id="puntos-top"></div>
+      <div class="puntos puntos-left" id="puntos-left"></div>
+      <div class="puntos puntos-right" id="puntos-right"></div>
+      <div class="puntos puntos-bottom" id="puntos-bottom"></div>
+    </div>
+
+    <!-- Right (VIP) -->
+    <div class="zona zona-vip" data-label="Zona VIP">
+      <div class="zona-header">Zona VIP</div>
+      <div class="puntos" id="puntos-vip"></div>
+    </div>
+
+    <!-- Entrada -->
+    <div class="zona zona-entrada" data-label="Entrada">
+      <div class="zona-header">Entrada</div>
+      <div class="puntos" id="puntos-entrada"></div>
+    </div>
+  </div>
+
+  <!-- Legend / counters (optional) -->
+  <div class="croquis-stats">
+    <div><span class="dot dot-disponible"></span> Disponibles</div>
+    <div><span class="dot dot-vendido"></span> Vendidos</div>
+  </div>
+</section>
+
+<!-- Minimal JS to generate points dynamically -->
+<script>
+  // Example data (replace with Django context via data-* or inline script)
+  const dataCroquis = {
+    top: { total: 30, vendidos: 7 },
+    left: { total: 20, vendidos: 5 },
+    right: { total: 20, vendidos: 6 },
+    bottom: { total: 20, vendidos: 6 },
+    dj: { total: 0, vendidos: 0 },        // usually no audience here
+    barra: { total: 0, vendidos: 0 },     // near bar
+    vip: { total: 0, vendidos: 0 },
+    entrada: { total: 0, vendidos: 0 }
+  };
+
+  function renderPoints(containerId, total, vendidos) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const punto = document.createElement('button');
+      punto.type = 'button';
+      punto.className = 'punto ' + (i < vendidos ? 'vendido' : 'disponible');
+      punto.setAttribute('aria-label', i < vendidos ? 'Vendido' : 'Disponible');
+
+      // Tooltip data
+      punto.dataset.tooltip = i < vendidos ? 'Vendido' : 'Disponible';
+      el.appendChild(punto);
+    }
+  }
+
+  // Render zones
+  renderPoints('puntos-top', dataCroquis.top.total, dataCroquis.top.vendidos);
+  renderPoints('puntos-left', dataCroquis.left.total, dataCroquis.left.vendidos);
+  renderPoints('puntos-right', dataCroquis.right.total, dataCroquis.right.vendidos);
+  renderPoints('puntos-bottom', dataCroquis.bottom.total, dataCroquis.bottom.vendidos);
+  renderPoints('puntos-dj', dataCroquis.dj.total, dataCroquis.dj.vendidos);
+  renderPoints('puntos-barra', dataCroquis.barra.total, dataCroquis.barra.vendidos);
+  renderPoints('puntos-vip', dataCroquis.vip.total, dataCroquis.vip.vendidos);
+  renderPoints('puntos-entrada', dataCroquis.entrada.total, dataCroquis.entrada.vendidos);
+</script>
+
   {% if evento.imagen %}
-    <img src="{{ evento.imagen.url }}" alt="Imagen del evento" style="max-width: 400px;">
+    <img src="{{ evento.imagen.url }}" alt="Imagen del evento" class="evento-imagen">
   {% endif %}
-  <a href="{% url 'eliminar_evento' evento.id %}" class="btn btn-danger"> Eliminar evento</a>
-  <a href="{% url 'my_events' %}" class="btn btn-secondary">← Volver</a>
+
+  <div class="acciones-evento">
+    <a href="{% url 'eliminar_evento' evento.id %}" class="btn btn-danger">Eliminar evento</a>
+    <a href="{% url 'my_events' %}" class="btn btn-secondary">← Volver</a>
+  </div>
 {% endblock %}

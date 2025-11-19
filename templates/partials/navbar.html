@@ -9,7 +9,7 @@
       <!-- Navegación -->
       <div class="flex space-x-6 items-center">
         {% if not user.is_authenticated %}
-          <a href="{% url 'events' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Eventos</a>
+          <a href="{% url 'events' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Como Usar Fiestapp</a>
           <a href="{% url 'register_assistant' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Registro de Asistentes</a>
           <a href="{% url 'register_organizer' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">¿Quieres ser Organizador?</a>
           <a href="{% url 'login' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Iniciar sesión</a>
@@ -23,6 +23,18 @@
           <a href="{% url 'crear_evento' %}" class="text-gray-700 hover:text-green-600 font-medium transition">Crear Evento</a>
           <a href="{% url 'reports' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Reportes</a>
         {% endif %}
+
+
+<!-- Barra de búsqueda -->
+{% if user.is_authenticated and user.rol in "organizador asistente" %}
+  <form method="get" action="{% url 'buscar_evento' %}" class="flex items-center">
+    <input type="text" name="q" placeholder="Buscar evento..."
+           class="border rounded px-2 py-1 focus:outline-none focus:ring focus:border-indigo-300"/>
+    <button type="submit" class="ml-2 bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-800">
+      Buscar
+    </button>
+  </form>
+{% endif %}
 
         <!-- Dropdown de perfil -->
         {% if user.is_authenticated %}

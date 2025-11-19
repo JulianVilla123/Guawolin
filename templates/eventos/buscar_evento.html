@@ -1,0 +1,29 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/buscar_evento.css' %}">
+{% endblock %}
+{% block content %}
+<div class="resultados-container">
+  <h2 class="resultados-title">Resultados de búsqueda</h2>
+
+  {% for evento in resultados %}
+    <div class="event-card">
+      <div>
+        <div class="event-title">{{ evento.titulo }}</div>
+        <div class="event-meta">
+          <span>📅 {{ evento.fecha }}</span>
+          <span>📍 {{ evento.lugar }}</span>
+        </div>
+        <div class="event-description">
+          {{ evento.descripcion|truncatewords:20 }}
+        </div>
+      </div>
+      <a href="{% url 'detalle_evento' evento.id %}">Ver más</a>
+    </div>
+  {% empty %}
+    <p class="no-resultados">No se encontraron eventos</p>
+  {% endfor %}
+</div>
+
+{% endblock %}
