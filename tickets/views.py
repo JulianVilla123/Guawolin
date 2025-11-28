@@ -16,8 +16,11 @@ from tickets.decoradores import solo_asistentes
 from django.shortcuts import get_object_or_404 #detalle de evento
 from django.contrib import messages #eliminar eventos
 from django.db.models import Q
+from .models import Evento, Ticket
+from django.utils import timezone
 
-
+def es_organizador_o_asistente(user):
+    return user.is_authenticated and (user.rol == "organizador" or user.rol == "asistente")
 
 def home(request):
     return render(request, 'guawolin/home.html')
@@ -145,8 +148,7 @@ def create_event_view(request):
 @solo_asistentes
 def panel_asistente(request):
     eventos = Evento.objects.filter(fecha__gte=timezone.now()).order_by('fecha')
-    return render(request, 'tickets/panel_asistente.html', {'eventos': eventos})
-
+    return render(request, "eventos/panel_asistente.html", {"eventos": eventos})
 
 #Vista para el panel organizador
 @solo_organizadores
@@ -171,10 +173,23 @@ def mis_eventos(request):
     return render(request, 'eventos/mis_eventos.html', {'eventos': eventos})
 
 #Vista de detalle de evento 
-@solo_organizadores
+@login_required
 def detalle_evento(request, evento_id):
-    evento = get_object_or_404(Evento, id=evento_id, organizador=request.user)
-    return render(request, 'eventos/detalle_evento.html', {'evento': evento})
+    evento = get_object_or_404(Evento, id=evento_id)
+
+    # Métricas de boletos
+    boletos_vendidos = Ticket.objects.filter(evento=evento, confirmado=True).count()
+    boletos_disponibles = max(evento.cupo_maximo - boletos_vendidos, 0)
+    porcentaje_vendido = 0
+    if evento.cupo_maximo > 0:
+        porcentaje_vendido = int((boletos_vendidos / evento.cupo_maximo) * 100)
+
+    return render(request, 'tickets/detalle_evento.html', {
+        "evento": evento,
+        "boletos_vendidos": boletos_vendidos,
+        "boletos_disponibles": boletos_disponibles,
+        "porcentaje_vendido": porcentaje_vendido,
+    })
 
 
 #Eliminar los eventos creados
@@ -193,18 +208,32 @@ def eventos_disponibles(request):
     eventos = Evento.objects.all().order_by('-fecha')
     return render(request, 'eventos/eventos_disponibles.html', {'eventos': eventos})
 
+
 #comprar boleto
-@solo_asistentes
+@login_required
 def comprar_boleto(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
-    if request.method == 'POST':
-        Boleto.objects.create(evento=evento, usuario=request.user)
-        messages.success(request, '¡Boleto comprado exitosamente!')
-        return redirect('eventos_disponibles')
-    return render(request, 'eventos/confirmar_compra.html', {'evento': evento})
 
-def es_organizador_o_asistente(user):
-    return getattr(user, "rol", None) in ["organizador", "asistente"]
+    if request.method == "POST":
+        nombre = request.POST.get("nombre")
+        email = request.POST.get("email")
+        tarjeta = request.POST.get("tarjeta")
+        expiracion = request.POST.get("expiracion")
+        cvv = request.POST.get("cvv")
+        cantidad = int(request.POST.get("cantidad", 1))
+
+        # Simulación: crear tickets
+        for _ in range(cantidad):
+            Ticket.objects.create(
+                evento=evento,
+                usuario=request.user,
+                confirmado=True
+            )
+
+        messages.success(request, "Compra realizada exitosamente 🎉")
+        return redirect("detalle_evento", evento_id=evento.id)
+
+    return render(request, "tickets/comprar_boleto.html", {"evento": evento})
 
 @login_required
 @user_passes_test(es_organizador_o_asistente)
