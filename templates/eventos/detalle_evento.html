@@ -6,6 +6,7 @@
   <h2>{{ evento.titulo }}</h2>
   <p><strong>Fecha:</strong> {{ evento.fecha|date:"d M Y H:i" }}</p>
   <p><strong>Lugar:</strong> {{ evento.lugar }}</p>
+   <p><strong>Precio por boleto:</strong> ${{ evento.precio }}</p>
 
 <h3 class="estado-title"> Estado de boletos</h3>
 <div class="estado-boletos">
@@ -25,10 +26,42 @@
     <span class="label">Porcentaje vendido:</span>
     <span class="value">{{ porcentaje_vendido|default:0 }}%</span>
   </div>
+  <div class="estado-item">
+    <span class="label">Ingresos totales:</span>
+    <span class="value">${{ ingresos_totales }}</span>
+  </div>
 
   <div class="progress-bar">
     <div class="progress" style="width: {{ porcentaje_vendido|default:0 }}%;"></div>
   </div>
+</div>
+
+<h3>Compradores</h3>
+<div class="tabla-compradores">
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Cantidad</th>
+        <th>Fecha de compra</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for boleto in boletos %}
+        <tr class="{% if forloop.counter > 3 %}oculto{% endif %}">
+          <td>{{ boleto.nombre }}</td>
+          <td>{{ boleto.email }}</td>
+          <td>{{ boleto.cantidad }}</td>
+          <td>{{ boleto.fecha_compra|date:"d M Y H:i" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if boletos|length > 3 %}
+    <button id="toggle-btn" class="btn btn-primary">Ver más compradores</button>
+  {% endif %}
 </div>
 
   <div class="acciones">
@@ -37,4 +70,30 @@
   </div>
 </div>
 {% endblock %}
+
+
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const btn = document.getElementById("toggle-btn");
+    if (btn) {
+      btn.addEventListener("click", function () {
+        const ocultos = document.querySelectorAll(".tabla-compradores .oculto");
+        const mostrando = ocultos[0].style.display === "table-row";
+
+        if (mostrando) {
+          // Ocultar de nuevo
+          ocultos.forEach(row => row.style.display = "none");
+          btn.textContent = "Ver más compradores";
+        } else {
+          // Mostrar todos
+          ocultos.forEach(row => row.style.display = "table-row");
+          btn.textContent = "Ver menos compradores";
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}
+
 

@@ -1,0 +1,208 @@
+/* Contenedor principal del boleto */
+.boleto-card {
+  max-width: 550px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #fff;
+  border: 2px dashed #333;   /* borde punteado estilo ticket */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+}
+
+/* Título */
+.boleto-card h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+/* Información del boleto */
+.boleto-card p {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.boleto-card strong {
+  color: #000;
+}
+
+/* Sección del código único */
+.boleto-card .codigo {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 15px 0;
+  color: #d6336c; /* color destacado */
+}
+
+/* QR */
+.boleto-card .qr {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.boleto-card .qr img {
+  width: 160px;
+  height: 160px;
+  border: 2px solid #333;
+  padding: 8px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+/* Botones */
+.boleto-card .acciones {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.boleto-card .btn {
+  display: inline-block;
+  margin: 5px;
+  padding: 10px 18px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+.boleto-card .btn-secondary {
+  background: #ddd;
+  color: #333;
+}
+
+.boleto-card .btn-secondary:hover {
+  background: #bbb;
+}
+
+.boleto-card .btn-success {
+  background: #28a745;
+  color: #fff;
+}
+
+.boleto-card .btn-success:hover {
+  background: #218838;
+}
+
+/* Perforaciones tipo ticket */
+.boleto-card::before,
+.boleto-card::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: #f5f5f5;
+  border: 2px solid #333;
+  border-radius: 50%;
+}
+
+.boleto-card::before {
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.boleto-card::after {
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tabla-compradores {
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+.tabla-compradores table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tabla-compradores th,
+.tabla-compradores td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.tabla-compradores th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.tabla-compradores tr:hover {
+  background-color: #f9f9f9;
+}
+
+.oculto {
+  display: none;
+}
+
+@media print {
+  body {
+    margin: 0;
+    background: #fff;
+  }
+
+  body * {
+    display: none !important;
+  }
+
+  #ticket, #ticket * {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  #ticket {
+    max-width: 550px;
+    margin: 0 auto;
+    padding: 25px;
+    background: #fff;
+    border: 2px dashed #333;
+    border-radius: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: none;
+    position: static;
+  }
+
+  #ticket h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #222;
+  }
+
+  #ticket p {
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #444;
+  }
+
+  #ticket strong {
+    color: #000;
+  }
+
+  #ticket .qr {
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  #ticket .qr img {
+    width: 160px;
+    height: 160px;
+    border: 2px solid #333;
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 8px;
+  }
+
+  #ticket .acciones,
+  #ticket .no-print {
+    display: none !important;
+  }
+}

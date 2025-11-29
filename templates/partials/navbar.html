@@ -16,12 +16,11 @@
 
         {% elif user.rol == 'asistente' %}
           <a href="{% url 'eventos_disponibles' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Eventos</a>
-          <a href="{% url 'my_tickets' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Mis Tickets</a>
+          <a href="{% url 'mis_tickets' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Mis Tickets</a>
 
         {% elif user.rol == 'organizador' %}
           <a href="{% url 'my_events' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Mis Eventos</a>
           <a href="{% url 'crear_evento' %}" class="text-gray-700 hover:text-green-600 font-medium transition">Crear Evento</a>
-          <a href="{% url 'reports' %}" class="text-gray-700 hover:text-indigo-600 font-medium transition">Reportes</a>
         {% endif %}
 
 

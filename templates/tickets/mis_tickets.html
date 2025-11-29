@@ -1,20 +1,24 @@
 {% extends 'partials/base.html' %}
+{% block title %}Mis Tickets{% endblock %}
+
 {% block content %}
+<h2 class="text-2xl font-bold mb-4">Mis Tickets</h2>
 
-  <div class="max-w-4xl mx-auto py-8">
-    <h1 class="text-2xl font-bold text-indigo-600 mb-4">Mis boletos</h1>
-    <p class="text-gray-700">Aquí puedes consultar los boletos que has adquirido para tus eventos.</p>
-
-    <!-- Lista de boletos -->
-    {#% for ticket in boletos %#}
-      <div class="mt-4 p-4 border rounded shadow">
-        <h2 class="font-semibold">{{ ticket.event_name }}</h2>
-        <p>Precio: ${{ ticket.price }}</p>
-        <p>Fecha de compra: {{ ticket.purchase_date }}</p>
-        <p>Confirmado: {{ ticket.is_confirmed|yesno:"Sí,No" }}</p>
+{% if boletos %}
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for boleto in boletos %}
+      <div class="boleto-card p-4 border border-dashed rounded-lg shadow-sm">
+        <h4 class="text-lg font-semibold">{{ boleto.evento.titulo }}</h4>
+        <p><strong>Código:</strong> {{ boleto.codigo_unico }}</p>
+        <p><strong>Fecha:</strong> {{ boleto.evento.fecha|date:"d M Y H:i" }}</p>
+        <p><strong>Lugar:</strong> {{ boleto.evento.lugar }}</p>
+        <p><strong>Cantidad:</strong> {{ boleto.cantidad }}</p>
+        <p><strong>Total pagado:</strong> ${{ boleto.total }}</p>
+        <a href="{% url 'boleto_detalle' boleto.id %}" class="btn btn-primary">Ver boleto</a>
       </div>
-    {#% empty %#}
-      <p>No tienes boletos registrados.</p>
-    {#% endfor %#}
+    {% endfor %}
   </div>
+{% else %}
+  <p class="text-gray-600">No has comprado boletos todavía.</p>
+{% endif %}
 {% endblock %}

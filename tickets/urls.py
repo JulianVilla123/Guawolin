@@ -5,7 +5,7 @@ from django.http import HttpResponse
 urlpatterns = [
     path('registro-asistente/', views.registerAssistant, name='register_assistant'),
     path('registro-organizador/', views.registerOrganizer, name='register_organizer'),
-    path('mis_tickets/', views.my_tickets, name='my_tickets'),         # Asistente
+    path("mis-tickets/", views.mis_tickets, name="mis_tickets"),         # Asistente
     path('mis_eventos/', views.my_events, name='my_events'),
     path('eventos/', views.events, name='events'),           # Organizador
     path('reportes/', views.reports, name='reports'), 
@@ -20,4 +20,5 @@ urlpatterns = [
     path('panel/asistente/eventos/', views.eventos_disponibles, name='eventos_disponibles'), #Vista Eventos asistente
     path('eventos/<int:evento_id>/comprar/', views.comprar_boleto, name='comprar_boleto'), #compra de boletos
     path("buscar/", views.buscar_evento, name="buscar_evento"), #Buscar Evento
+    path("sboleto/<int:boleto_id>/", views.boleto_detalle, name="boleto_detalle"),
 ]

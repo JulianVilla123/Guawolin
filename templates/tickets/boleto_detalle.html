@@ -1,0 +1,70 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block title %}Boleto comprado{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/boleto_detalle.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="ticket" class="boleto-card">
+  <h2>Boleto para {{ boleto.evento.titulo }}</h2>
+  <p><strong>Código único:</strong> {{ boleto.codigo_unico }}</p>
+  <p><strong>Fecha:</strong> {{ boleto.evento.fecha|date:"d M Y H:i" }}</p>
+  <p><strong>Lugar:</strong> {{ boleto.evento.lugar }}</p>
+  <p><strong>Comprador:</strong> {{ boleto.nombre }}</p>
+  <p><strong>Email:</strong> {{ boleto.email }}</p>
+  <p><strong>Cantidad:</strong> {{ boleto.cantidad }}</p>
+  <p><strong>Total pagado:</strong> ${{ total }}</p>
+
+  {% if boleto.qr_image %}
+    <div class="qr">
+      <img src="{{ boleto.qr_image.url }}" alt="Código QR del boleto">
+    </div>
+  {% endif %}
+  {% else %}
+  <p>No se ha generado el código QR.</p>
+  {% endif %} 
+
+  <div class="acciones">
+    <a href="{% url 'panel_asistente' %}" class="btn btn-secondary">← Volver al panel</a>
+    <button class="btn btn-success no-print" onclick="printTicket()">🖨️ Imprimir boleto</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function printTicket() {
+  const ticket = document.getElementById('ticket');
+  const w = window.open('', '_blank');
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Imprimir boleto</title>
+        <link rel="stylesheet" href="/static/css/boleto_detalle.css">
+        <style>
+          @page { margin: 12mm; }
+          body { margin: 0; background: #fff; }
+          .acciones, .no-print { display: none !important; }
+        </style>
+      </head>
+      <body>
+        ${ticket.outerHTML}
+      </body>
+    </html>
+  `;
+
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  w.print();
+  w.close();
+}
+</script>
+{% endblock %}
+

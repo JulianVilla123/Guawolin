@@ -18,6 +18,7 @@ from django.contrib import messages #eliminar eventos
 from django.db.models import Q
 from .models import Evento, Ticket
 from django.utils import timezone
+from .models import Evento, Boleto
 
 def es_organizador_o_asistente(user):
     return user.is_authenticated and (user.rol == "organizador" or user.rol == "asistente")
@@ -106,10 +107,10 @@ def reports(request):
         return redirect('home')
     return render(request, 'tickets/reportes.html')
 
-def my_tickets(request):
-    if request.user.rol != 'asistente':
-        return redirect('home')
-    return render(request, 'tickets/mis_tickets.html')
+@login_required
+def mis_tickets(request):
+    boletos = request.user.boletos.all()  # 👈 ahora sí funciona
+    return render(request, "tickets/mis_tickets.html", {"boletos": boletos})
 
 def events(request):
     return render(request, 'tickets/eventos.html')
@@ -176,19 +177,26 @@ def mis_eventos(request):
 @login_required
 def detalle_evento(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
+    boletos = Boleto.objects.filter(evento=evento)
 
-    # Métricas de boletos
-    boletos_vendidos = Ticket.objects.filter(evento=evento, confirmado=True).count()
+
+ # Métricas de boletos
+    boletos_vendidos = sum(b.cantidad for b in boletos)  # suma la cantidad de cada compra
     boletos_disponibles = max(evento.cupo_maximo - boletos_vendidos, 0)
+    ingresos_totales = boletos_vendidos * evento.precio
+
+
     porcentaje_vendido = 0
     if evento.cupo_maximo > 0:
         porcentaje_vendido = int((boletos_vendidos / evento.cupo_maximo) * 100)
 
-    return render(request, 'tickets/detalle_evento.html', {
+    return render(request, 'eventos/detalle_evento.html', {
         "evento": evento,
+        "boletos": boletos,  # 👈 para listar compradores en el template
         "boletos_vendidos": boletos_vendidos,
         "boletos_disponibles": boletos_disponibles,
         "porcentaje_vendido": porcentaje_vendido,
+        "ingresos_totales": ingresos_totales, 
     })
 
 
@@ -215,25 +223,31 @@ def comprar_boleto(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
 
     if request.method == "POST":
+        cantidad = int(request.POST.get("cantidad", 1))
         nombre = request.POST.get("nombre")
         email = request.POST.get("email")
-        tarjeta = request.POST.get("tarjeta")
-        expiracion = request.POST.get("expiracion")
-        cvv = request.POST.get("cvv")
-        cantidad = int(request.POST.get("cantidad", 1))
 
-        # Simulación: crear tickets
-        for _ in range(cantidad):
-            Ticket.objects.create(
-                evento=evento,
-                usuario=request.user,
-                confirmado=True
-            )
+        boleto = Boleto.objects.create(
+            evento=evento,
+            comprador=request.user,
+            cantidad=cantidad,
+            nombre=nombre,
+            email=email,
+        )
 
-        messages.success(request, "Compra realizada exitosamente 🎉")
-        return redirect("detalle_evento", evento_id=evento.id)
+        messages.success(request, " Tu compra se realizó correctamente.")
+        return redirect("boleto_detalle", boleto_id=boleto.id)
 
     return render(request, "tickets/comprar_boleto.html", {"evento": evento})
+
+
+def boleto_detalle(request, boleto_id):
+    boleto = get_object_or_404(Boleto, id=boleto_id)
+    total = boleto.cantidad * boleto.evento.precio   # 👈 cálculo en Python
+    return render(request, "tickets/boleto_detalle.html", {
+        "boleto": boleto,
+        "total": total,
+    })
 
 @login_required
 @user_passes_test(es_organizador_o_asistente)
@@ -247,7 +261,6 @@ def buscar_evento(request):
     return render(request, "eventos/buscar_evento.html", {"resultados": resultados})
 
 
-    
-
-
-
+@login_required
+def reportes_eventos(request):
+    return HttpResponse("Hola Julian, la vista funciona ✅")
