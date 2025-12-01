@@ -1,0 +1,36 @@
+{% extends 'partials/base.html' %}
+{% block title %}Cómo Usar Fiestapp{% endblock %}
+
+{% block content %}
+<div class="tutoriales-wrapper">
+  <h2>Tutoriales de Fiestapp</h2>
+
+  <div class="tutoriales-grid">
+    {% for video in tutoriales %}
+      <div class="tutorial-card">
+        {% if video.url %}
+          <iframe width="560" height="315"
+                  src="https://www.youtube.com/embed/IWUxc5VZ4lY"
+                  title="YouTube video player"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen>
+          </iframe>
+        {% else %}
+          <div class="p-4 text-center text-red-600 font-semibold">
+            Este video no se puede mostrar aquí.
+          </div>
+        {% endif %}
+        <h3>{{ video.titulo }}</h3>
+        <p class="text-center mt-2">
+          <a href="{{ video.fallback }}" target="_blank" class="text-blue-600 underline">
+            Ver en YouTube
+          </a>
+        </p>
+      </div>
+    {% empty %}
+      <p class="text-center text-gray-500">No hay tutoriales disponibles.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -55,7 +55,7 @@ class EventoForm(forms.ModelForm):
 
     class Meta:
         model = Evento
-        fields = ['titulo', 'descripcion', 'fecha', 'lugar', 'imagen','cupo_maximo']
+        fields = ['titulo', 'descripcion', 'fecha', 'lugar', 'imagen','cupo_maximo','precio']
 
 
 

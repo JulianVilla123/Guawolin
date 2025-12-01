@@ -21,6 +21,8 @@
       <p><label for="id_lugar">Lugar:</label> {{ form.lugar }}</p>
       <p><label for="id_imagen">Imagen:</label> {{ form.imagen }}</p>
       <p><label for="id_cupo_maximo">Cupo máximo:</label> {{ form.cupo_maximo }}</p>
+      <label for="id_precio">Precio por boleto:</label>
+      <input type="number" step="0.01" name="precio" id="id_precio" required>
       <button type="submit" class="btn-guardar">Guardar Evento</button>
     </form>
     <a href="{% url 'home' %}" class="volver-link">← Volver al Dashboard</a>

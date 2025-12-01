@@ -3,44 +3,39 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>{% block title %}Comercializadora Modelo{% endblock %}</title>
+  <title>{% block title %}Villa{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  {% endblock %}
+
+  <!-- CSS principal -->
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+  <!-- Paneles y módulos -->
+  <link rel="stylesheet" href="{% static 'css/panel_asistente.css' %}">
+  <link rel="stylesheet" href="{% static 'css/panel_organizador.css' %}">
+  <link rel="stylesheet" href="{% static 'css/detalle_evento.css' %}">
+  <link rel="stylesheet" href="{% static 'css/comprar_boleto.css' %}">
+  <link rel="stylesheet" href="{% static 'css/boleto_detalle.css' %}">
+  <link rel="stylesheet" href="{% static 'css/reporte_evento.css' %}">
+  <link rel="stylesheet" href="{% static 'css/como_usar.css' %}">
+
+  {% block extra_css %}{% endblock %}
 </head>
 <body class="{% block body_class %}default-bg{% endblock %}">
 
   <!-- Navbar -->
   {% include 'partials/navbar.html' %}
-  <!-- Mensajes (si usas messages framework) -->
-  {% if messages %}
-    <div class="container mx-auto mt-4">
-      {% for message in messages %}
-        <div class="p-4 mb-4 text-sm rounded {{ message.tags }}">
-          {{ message }}
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
+
   <!-- Contenido principal -->
   <main class="container mx-auto px-4 py-6">
     {% block content %}{% endblock %}
   </main>
+
   <!-- Footer -->
   {% include 'partials/footer.html' %}
 
   {% block extra_js %}{% endblock %}
-    <!-- Panel de asistente css -->
-  <link rel="stylesheet" href="{% static 'css/panel_asistente.css' %}">
-       <!-- Panel de organizador css -->
-  <link rel="stylesheet" href="{% static 'css/panel_organizador.css' %}">
-   <!-- Detalle Evento css -->
-  <link rel="stylesheet" href="{% static 'css/detalle_evento.css' %}">
-   <!-- Compra de boeltos css -->
-   <link rel="stylesheet" href="{% static 'css/comprar_boleto.css' %}">
-
 </body>
 </html>
-
