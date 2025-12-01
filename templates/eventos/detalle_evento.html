@@ -2,6 +2,15 @@
 {% block title %}Detalle del evento{% endblock %}
 
 {% block content %}
+
+{% if messages %}
+  <div class="mensajes">
+    {% for message in messages %}
+      <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
 <div class="evento-card">
   <h2>{{ evento.titulo }}</h2>
   <p><strong>Fecha:</strong> {{ evento.fecha|date:"d M Y H:i" }}</p>

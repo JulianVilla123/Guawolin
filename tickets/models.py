@@ -5,7 +5,8 @@ from django.contrib.auth.models import AbstractUser, User
 from django.conf import settings
 from io import BytesIO
 from django.core.files.base import ContentFile
-
+from PIL import Image
+from django.core.files import File
 
 # Modelo personalizado de usuario
 class Usuario(AbstractUser):
@@ -55,13 +56,29 @@ class Ticket(models.Model):
     def __str__(self):
         return f"{self.usuario.username} – {self.evento.titulo}"
 
-# Modelo de Boleto
+
+def generate_qr_image(data):
+    qr = qrcode.QRCode(
+        version=1,  # controla la densidad (1 es el más pequeño)
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=6,  # 🔧 tamaño de cada "cuadro"
+        border=2     # 🔧 margen alrededor del QR
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+    buffer = BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+    return File(buffer, name=f"boleto_{uuid.uuid4().hex[:10]}.png")
+
 class Boleto(models.Model):
     evento = models.ForeignKey("Evento", on_delete=models.CASCADE)
     comprador = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="boletos"   # 👈 aquí
+        related_name="boletos"
     )
     nombre = models.CharField(max_length=200)
     email = models.EmailField(blank=True, null=True)
@@ -70,26 +87,25 @@ class Boleto(models.Model):
 
     codigo_unico = models.CharField(max_length=50, editable=False, null=True, blank=True)
     qr_image = models.ImageField(upload_to="boletos_qr/", blank=True, null=True)
-
     total = models.DecimalField(max_digits=10, decimal_places=2, editable=False, null=True, blank=True)
 
     def save(self, *args, **kwargs):
+        # Generar código único si no existe
         if not self.codigo_unico:
             self.codigo_unico = uuid.uuid4().hex[:10]
 
-         # Calcular total siempre que haya precio en el evento
+        # Calcular total si el evento tiene precio
         if self.evento and hasattr(self.evento, "precio"):
             self.total = self.cantidad * self.evento.precio
 
         super().save(*args, **kwargs)
 
+        # Generar QR si no existe
         if not self.qr_image:
-            qr = qrcode.make(f"Boleto {self.id} - Código: {self.codigo_unico}")
-            buffer = BytesIO()
-            file_name = f"boleto_{self.codigo_unico}.png"
-            self.qr_image.save(file_name, ContentFile(buffer.getvalue()), save=False)
+            qr_file = generate_qr_image(f"Boleto {self.id} - Código: {self.codigo_unico}")
+            self.qr_image.save(qr_file.name, qr_file, save=False)
             super().save(update_fields=["qr_image"])
 
     def __str__(self):
-        return f"Boleto {self.codigo_unisco} de {self.nombre} para {self.evento.titulo}"
+        return f"Boleto {self.codigo_unico} de {self.nombre} para {self.evento.titulo}"
 

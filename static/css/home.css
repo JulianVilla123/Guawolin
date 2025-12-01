@@ -1,13 +1,16 @@
 .halloween-page {
-  background: url('/static/img/test1.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background-image: url('/static/img/image.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: contain;
+  background-color: #ffffff; /* relleno si sobra espacio */
   min-height: 100vh;
   color: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .overlay {
-  background-color: rgba(0, 0, 0, 0.6);
   padding: 60px 20px;
   text-align: center;
 }
@@ -42,6 +45,7 @@
 }
 
 .countdown-title {
+  color: #fff;
   font-size: 2rem;
   margin-bottom: 20px;
 }

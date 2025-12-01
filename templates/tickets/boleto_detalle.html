@@ -8,6 +8,14 @@
 {% endblock %}
 
 {% block content %}
+{% if messages %}
+  <div class="mensajes">
+    {% for message in messages %}
+      <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
 <div id="ticket" class="boleto-card">
   <h2>Boleto para {{ boleto.evento.titulo }}</h2>
   <p><strong>Código único:</strong> {{ boleto.codigo_unico }}</p>
@@ -18,18 +26,15 @@
   <p><strong>Cantidad:</strong> {{ boleto.cantidad }}</p>
   <p><strong>Total pagado:</strong> ${{ total }}</p>
 
-  {% if boleto.qr_image %}
-    <div class="qr">
-      <img src="{{ boleto.qr_image.url }}" alt="Código QR del boleto">
-    </div>
-  {% endif %}
-  {% else %}
+{% if qr_url %}
+  <img src="{{ qr_url }}" alt="Código QR del boleto">
+{% else %}
   <p>No se ha generado el código QR.</p>
-  {% endif %} 
+{% endif %}
 
   <div class="acciones">
-    <a href="{% url 'panel_asistente' %}" class="btn btn-secondary">← Volver al panel</a>
-    <button class="btn btn-success no-print" onclick="printTicket()">🖨️ Imprimir boleto</button>
+    <a href="{% url 'home' %}" class="btn btn-secondary">← Volver al panel</a>
+    <button class="btn btn-success no-print" onclick="printTicket()"> Imprimir boleto</button>
   </div>
 </div>
 {% endblock %}
@@ -49,11 +54,11 @@ function printTicket() {
         <style>
           @page { margin: 12mm; }
           body { margin: 0; background: #fff; }
-          .acciones, .no-print { display: none !important; }
+          .acciones, .no-print, .mensajes { display: none !important; }
         </style>
       </head>
       <body>
-        ${ticket.outerHTML}
+        ${ticket.outerHTML}   <!-- 👈 aquí sí usamos outerHTML -->
       </body>
     </html>
   `;
@@ -61,9 +66,13 @@ function printTicket() {
   w.document.open();
   w.document.write(html);
   w.document.close();
-  w.focus();
-  w.print();
-  w.close();
+
+  // Espera a que carguen las imágenes (incluido el QR)
+  w.onload = function () {
+    w.focus();
+    w.print();
+    w.close();
+  };
 }
 </script>
 {% endblock %}

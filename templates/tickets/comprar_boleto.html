@@ -2,27 +2,37 @@
 {% block title %}Comprar boletos{% endblock %}
 
 {% block content %}
+
+{% if messages %}
+  <div class="mensajes">
+    {% for message in messages %}
+      <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
 <div class="compra-wrapper">
   <!-- Información del evento -->
   <div class="compra-info">
-    <h2 class="compra-titulo">🎟️ Comprar boletos para <span>{{ evento.titulo }}</span></h2>
+    <h2 class="compra-titulo"> Comprar boletos para <span>{{ evento.titulo }}</span></h2>
     <p><strong>Fecha:</strong> {{ evento.fecha|date:"d M Y H:i" }}</p>
     <p><strong>Lugar:</strong> {{ evento.lugar }}</p>
-    <p><strong>Cupo disponible:</strong> {{ evento.cupo_maximo }}</p>
+    <p><strong>Cupo disponible:</strong> {{ boletos_disponibles }}</p>
     <p><strong>Precio por boleto:</strong> ${{ evento.precio }}</p>
   </div>
 
   <!-- Formulario de compra -->
   <form method="post" class="compra-form">
     {% csrf_token %}
-    <h3 class="form-titulo">🧾 Datos del comprador</h3>
+    <h3 class="form-titulo"> Datos del comprador</h3>
     <div class="form-grid">
       <input type="text" name="nombre" id="nombre" placeholder="Nombre completo" required>
       <input type="email" name="email" id="email" placeholder="Correo electrónico" required>
-      <input type="number" name="cantidad" id="cantidad" min="1" max="{{ evento.cupo_maximo }}" value="1" required>
+      <input type="number" name="cantidad" id="cantidad" min="1" max="{{ boletos_disponibles }}" value="1" required>
     </div>
 
-    <h3 class="form-titulo">💳 Información de tarjeta</h3>
+    <h3 class="form-titulo"> Información de tarjeta</h3>
     <div class="tarjeta-grid">
       <input type="text" name="banco" id="banco" placeholder="Nombre del banco" required>
       <input type="text" name="tarjeta" id="tarjeta" maxlength="19" placeholder="Número de tarjeta" required>
@@ -44,8 +54,8 @@
     </div>
 
     <div class="acciones">
-      <button type="submit" class="btn btn-success">✅ Confirmar compra</button>
-      <a href="{% url 'eventos_disponibles' %}" class="btn btn-secondary">❌ Cancelar</a>
+      <button type="submit" class="btn btn-success"> Confirmar compra</button>
+      <a href="{% url 'eventos_disponibles' %}" class="btn btn-secondary"> Cancelar</a>
     </div>
   </form>
 </div>

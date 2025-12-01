@@ -1,6 +1,6 @@
 /* Fondo general para la página de login */
 .login-page {
-  background: url('/static/img/test.png') no-repeat center center fixed !important;
+  background: url('/static/img/image2.png') no-repeat center center fixed !important;
   background-size: cover;
   min-height: 100vh;
 }

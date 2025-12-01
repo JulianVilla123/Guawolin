@@ -1,3 +1,4 @@
+
 .compra-wrapper {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -99,4 +100,40 @@ input {
   border-radius: 6px;
   font-weight: bold;
   font-size: 0.9rem;
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* Mensaje de éxito (verde) */
+.alert.success {
+  background-color: #e6ffed;   /* verde claro */
+  border: 1px solid #38a169;  /* verde */
+  color: #22543d;             /* verde oscuro */
+}
+
+/* Mensaje de error (rojo) */
+.alert.error {
+  background-color: #ffe6e6;   /* rojo claro */
+  border: 1px solid #e53e3e;  /* rojo */
+  color: #742a2a;             /* rojo oscuro */
+}
+
+/* Mensaje de advertencia (naranja) */
+.alert.warning {
+  background-color: #fffaf0;
+  border: 1px solid #dd6b20;
+  color: #7b341e;
+}
+
+/* Mensaje de información (azul) */
+.alert.info {
+  background-color: #ebf8ff;
+  border: 1px solid #3182ce;
+  color: #2a4365;
 }

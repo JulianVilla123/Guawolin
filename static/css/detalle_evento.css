@@ -85,3 +85,46 @@
 .estado-item.porcentaje .value {
   color: #2563eb;
 }
+
+/* Contenedor general de mensajes */
+.mensajes {
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+/* Estilo base para todos los mensajes */
+.mensajes .alert {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* Mensajes de éxito */
+.mensajes .success {
+  background-color: #e6ffed;
+  border: 1px solid #38a169;
+  color: #22543d;
+}
+
+/* Mensajes de error */
+.mensajes .error {
+  background-color: #ffe6e6;
+  border: 1px solid #e53e3e;
+  color: #742a2a;
+}
+
+/* Mensajes de advertencia */
+.mensajes .warning {
+  background-color: #fffaf0;
+  border: 1px solid #dd6b20;
+  color: #7b341e;
+}
+
+/* Mensajes de información */
+.mensajes .info {
+  background-color: #ebf8ff;
+  border: 1px solid #3182ce;
+  color: #2a4365;
+}
