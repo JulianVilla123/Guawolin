@@ -2,84 +2,53 @@
 {% block title %}Detalle del evento{% endblock %}
 
 {% block content %}
-
-{% if messages %}
-  <div class="mensajes">
-    {% for message in messages %}
-      <div class="alert {{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-  </div>
-{% endif %}
-
 <div class="evento-card">
   <h2>{{ evento.titulo }}</h2>
   <p><strong>Fecha:</strong> {{ evento.fecha|date:"d M Y H:i" }}</p>
   <p><strong>Lugar:</strong> {{ evento.lugar }}</p>
-   <p><strong>Precio por boleto:</strong> ${{ evento.precio }}</p>
 
-<h3 class="estado-title"> Estado de boletos</h3>
-<div class="estado-boletos">
-  <div class="estado-item">
-    <span class="label">Cupo máximo:</span>
-    <span class="value">{{ evento.cupo_maximo }}</span>
-  </div>
-  <div class="estado-item">
-    <span class="label">Vendidos:</span>
-    <span class="value">{{ boletos_vendidos }}</span>
-  </div>
-  <div class="estado-item">
-    <span class="label">Disponibles:</span>
-    <span class="value">{{ boletos_disponibles }}</span>
-  </div>
-  <div class="estado-item porcentaje">
-    <span class="label">Porcentaje vendido:</span>
-    <span class="value">{{ porcentaje_vendido|default:0 }}%</span>
-  </div>
-  <div class="estado-item">
-    <span class="label">Ingresos totales:</span>
-    <span class="value">${{ ingresos_totales }}</span>
+  <h3 class="estado-title"> Estado de boletos</h3>
+  <div class="estado-boletos">
+    <div class="estado-item">
+      <span class="label">Cupo máximo:</span>
+      <span class="value">{{ evento.cupo_maximo }}</span>
+    </div>
+    <div class="estado-item">
+      <span class="label">Vendidos:</span>
+      <span class="value">{{ boletos_vendidos }}</span>
+    </div>
+    <div class="estado-item">
+      <span class="label">Disponibles:</span>
+      <span class="value">{{ boletos_disponibles }}</span>
+    </div>
+    <div class="estado-item porcentaje">
+      <span class="label">Porcentaje vendido:</span>
+      <span class="value">{{ porcentaje_vendido|default:0 }}%</span>
+    </div>
+    <div class="estado-item">
+      <span class="label">Ingresos totales:</span>
+      <span class="value">${{ ingresos_totales }}</span>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress" style="width: {{ porcentaje_vendido|default:0 }}%;"></div>
+    </div>
   </div>
 
-  <div class="progress-bar">
-    <div class="progress" style="width: {{ porcentaje_vendido|default:0 }}%;"></div>
-  </div>
-</div>
-
-<h3>Compradores</h3>
-<div class="tabla-compradores">
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Cantidad</th>
-        <th>Fecha de compra</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for boleto in boletos %}
-        <tr class="{% if forloop.counter > 3 %}oculto{% endif %}">
-          <td>{{ boleto.nombre }}</td>
-          <td>{{ boleto.email }}</td>
-          <td>{{ boleto.cantidad }}</td>
-          <td>{{ boleto.fecha_compra|date:"d M Y H:i" }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  {% if boletos|length > 3 %}
-    <button id="toggle-btn" class="btn btn-primary">Ver más compradores</button>
-  {% endif %}
-</div>
-
-  <div class="acciones">
-    <a href="{% url 'my_events' %}" class="btn btn-secondary">← Volver</a>
-    <a href="{% url 'eliminar_evento' evento.id %}" class="btn btn-danger">Eliminar evento</a>
+  <!-- Botones -->
+  <div class="flex justify-between mt-8">
+    <a href="{% url 'my_events' %}" 
+       class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
+      ← Volver
+    </a>
+    <a href="{% url 'eliminar_evento' evento.id %}" 
+       class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+       onclick="return confirm('¿Seguro que quieres eliminar este evento?');">
+      🗑 Eliminar evento
+    </a>
   </div>
 </div>
 {% endblock %}
-
 
 {% block extra_js %}
 <script>
@@ -91,11 +60,9 @@
         const mostrando = ocultos[0].style.display === "table-row";
 
         if (mostrando) {
-          // Ocultar de nuevo
           ocultos.forEach(row => row.style.display = "none");
           btn.textContent = "Ver más compradores";
         } else {
-          // Mostrar todos
           ocultos.forEach(row => row.style.display = "table-row");
           btn.textContent = "Ver menos compradores";
         }
@@ -104,5 +71,3 @@
   });
 </script>
 {% endblock %}
-
-
