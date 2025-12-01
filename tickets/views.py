@@ -184,7 +184,7 @@ def detalle_evento(request, evento_id):
     if evento.cupo_maximo > 0:
         porcentaje_vendido = int((boletos_vendidos / evento.cupo_maximo) * 100)
 
-    return render(request, 'tickets/detalle_evento.html', {
+    return render(request, 'eventos/detalle_evento.html', {
         "evento": evento,
         "boletos_vendidos": boletos_vendidos,
         "boletos_disponibles": boletos_disponibles,

@@ -2,38 +2,60 @@
 {% block title %}Detalle del evento{% endblock %}
 
 {% block content %}
-<div class="evento-card">
-  <h2>{{ evento.titulo }}</h2>
-  <p><strong>Fecha:</strong> {{ evento.fecha|date:"d M Y H:i" }}</p>
-  <p><strong>Lugar:</strong> {{ evento.lugar }}</p>
+<div class="max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6">
+  <!-- Título del evento -->
+  <h2 class="text-2xl font-bold text-indigo-600 mb-4">{{ evento.titulo }}</h2>
 
-<h3 class="estado-title"> Estado de boletos</h3>
-<div class="estado-boletos">
-  <div class="estado-item">
-    <span class="label">Cupo máximo:</span>
-    <span class="value">{{ evento.cupo_maximo }}</span>
-  </div>
-  <div class="estado-item">
-    <span class="label">Vendidos:</span>
-    <span class="value">{{ boletos_vendidos }}</span>
-  </div>
-  <div class="estado-item">
-    <span class="label">Disponibles:</span>
-    <span class="value">{{ boletos_disponibles }}</span>
-  </div>
-  <div class="estado-item porcentaje">
-    <span class="label">Porcentaje vendido:</span>
-    <span class="value">{{ porcentaje_vendido|default:0 }}%</span>
+  <!-- Info básica -->
+  <div class="space-y-2 text-gray-700">
+    <p><span class="font-semibold">📅 Fecha:</span> {{ evento.fecha|date:"d M Y H:i" }}</p>
+    <p><span class="font-semibold">📍 Lugar:</span> {{ evento.lugar }}</p>
   </div>
 
-  <div class="progress-bar">
-    <div class="progress" style="width: {{ porcentaje_vendido|default:0 }}%;"></div>
-  </div>
-</div>
+  <hr class="my-6">
 
-  <div class="acciones">
-    <a href="{% url 'my_events' %}" class="btn btn-secondary">← Volver</a>
-    <a href="{% url 'eliminar_evento' evento.id %}" class="btn btn-danger">Eliminar evento</a>
+  <!-- Estado de boletos -->
+  <h3 class="text-lg font-semibold text-gray-800 mb-3">🎟 Estado de boletos</h3>
+  <div class="grid grid-cols-2 gap-4">
+    <div class="bg-gray-100 p-3 rounded">
+      <span class="block text-sm text-gray-500">Cupo máximo</span>
+      <span class="text-xl font-bold text-gray-800">{{ evento.cupo_maximo }}</span>
+    </div>
+    <div class="bg-gray-100 p-3 rounded">
+      <span class="block text-sm text-gray-500">Vendidos</span>
+      <span class="text-xl font-bold text-green-600">{{ boletos_vendidos }}</span>
+    </div>
+    <div class="bg-gray-100 p-3 rounded">
+      <span class="block text-sm text-gray-500">Disponibles</span>
+      <span class="text-xl font-bold text-blue-600">{{ boletos_disponibles }}</span>
+    </div>
+    <div class="bg-gray-100 p-3 rounded">
+      <span class="block text-sm text-gray-500">Porcentaje vendido</span>
+      <span class="text-xl font-bold text-yellow-600">{{ porcentaje_vendido|default:0 }}%</span>
+    </div>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div class="mt-6">
+    <div class="w-full bg-gray-200 rounded-full h-6">
+      <div class="bg-green-500 h-6 rounded-full text-center text-white text-sm font-semibold"
+           style="width: {{ porcentaje_vendido|default:0 }}%;">
+        {{ porcentaje_vendido|default:0 }}%
+      </div>
+    </div>
+  </div>
+
+  <!-- Botones -->
+  <div class="flex justify-between mt-8">
+    <a href="{% url 'my_events' %}" 
+       class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
+      ← Volver
+    </a>
+    <a href="{% url 'eliminar_evento' evento.id %}" 
+       class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+       onclick="return confirm('¿Seguro que quieres eliminar este evento?');">
+      🗑 Eliminar evento
+    </a>
   </div>
 </div>
 {% endblock %}
