@@ -1,0 +1,62 @@
+.eventos-wrapper {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.eventos-wrapper h2 {
+  text-align: center;
+  font-size: 2.4rem;
+  margin-bottom: 40px;
+  color: #2c3e50;
+}
+
+.eventos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+/* Tarjeta de evento con borde visible */
+.evento-card {
+  background: #ffffff;
+  border: 2px solid #3498db; /* 👈 Borde azul visible */
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.evento-card:hover {
+  transform: translateY(-4px);
+  border-color: #2ecc71; /* 👈 Borde verde al pasar el mouse */
+}
+
+.evento-info h3 {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  color: #34495e;
+}
+
+.evento-info p {
+  margin: 6px 0;
+  color: #7f8c8d;
+  font-size: 0.95rem;
+}
+
+.btn-detalles {
+  display: inline-block;
+  margin-top: 12px;
+  background-color: #2980b9;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-detalles:hover {
+  background-color: #1f6391;
+}
