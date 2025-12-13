@@ -769,3 +769,23 @@ Watching for file changes with StatReloader
 "GET /tickets/api-docs/ HTTP/1.1" 200 20610
 C:\Users\LENOVO\Desktop\Guawolin\guawolin\settings.py changed, reloading.
 Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Session data corrupted
+"GET / HTTP/1.1" 200 6593
+"GET /static/css/base.css HTTP/1.1" 304 0
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 3866
+Watching for file changes with StatReloader
+Session data corrupted
+"GET / HTTP/1.1" 200 6491
+"GET /static/css/base.css HTTP/1.1" 304 0
+Session data corrupted
+"GET / HTTP/1.1" 200 6491
+Session data corrupted
+"GET / HTTP/1.1" 200 6491
+Session data corrupted
+"GET /login/ HTTP/1.1" 200 5625
+Session data corrupted
+"POST /login/ HTTP/1.1" 302 0
+"GET /tickets/asistente/ HTTP/1.1" 200 10580
+"GET /tickets/asistente/ HTTP/1.1" 200 10586
