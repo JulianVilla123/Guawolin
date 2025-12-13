@@ -1,29 +1,42 @@
 {% extends 'partials/base.html' %}
 {% load static %}
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/buscar_evento.css' %}">
-{% endblock %}
+
 {% block content %}
-<div class="resultados-container">
-  <h2 class="resultados-title">Resultados de búsqueda</h2>
+<div class="max-w-6xl mx-auto px-4 py-10">
+  <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">🎉 Resultados de búsqueda</h2>
 
   {% for evento in resultados %}
-    <div class="event-card">
-      <div>
-        <div class="event-title">{{ evento.titulo }}</div>
-        <div class="event-meta">
-          <span>📅 {{ evento.fecha }}</span>
-          <span>📍 {{ evento.lugar }}</span>
+      <div class="bg-white shadow-md rounded-lg p-6 mb-6 hover:shadow-lg transition-transform duration-300">
+        <!-- Título -->
+        <h3 class="text-2xl font-bold text-gray-900 mb-3">
+          {{ evento.titulo }}
+        </h3>
+
+        <!-- Fecha y lugar en una sola fila -->
+        <div class="flex flex-wrap items-center text-gray-600 text-sm gap-x-6 mb-4">
+          <span class="flex items-center gap-1">
+            📅 <span>{{ evento.fecha }}</span>
+          </span>
+          <span class="flex items-center gap-1">
+            📍 <span>{{ evento.lugar }}</span>
+          </span>
         </div>
-        <div class="event-description">
+
+        <!-- Descripción -->
+        <p class="text-gray-700 leading-relaxed mb-6">
           {{ evento.descripcion|truncatewords:20 }}
-        </div>
+        </p>
+
+        <!-- Botón -->
+        <a href="{% url 'detalle_evento_asistente' evento.id %}"
+          class="inline-flex items-center bg-indigo-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition-colors duration-300">
+          Ver más →
+        </a>
       </div>
-      <a href="{% url 'detalle_evento' evento.id %}">Ver más</a>
+
     </div>
   {% empty %}
-    <p class="no-resultados">No se encontraron eventos</p>
+    <p class="text-center text-gray-400 text-lg">No se encontraron eventos 😢</p>
   {% endfor %}
 </div>
-
 {% endblock %}

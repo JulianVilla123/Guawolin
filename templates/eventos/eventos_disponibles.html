@@ -9,17 +9,28 @@
 
 {% block content %}
 <div class="eventos-wrapper">
-  <h2>Explora los eventos   </h2>
+  <h2>Explora los eventos</h2>
   {% if eventos %}
     <div class="eventos-grid">
       {% for evento in eventos %}
         <div class="border-2 border-blue-500 rounded-lg p-6 shadow-md hover:border-green-500 transition duration-200 bg-white">
-
           <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ evento.titulo }}</h3>
           <p class="text-sm text-gray-600 mb-1">📅 {{ evento.fecha|date:"d M Y H:i" }}</p>
           <p class="text-sm text-gray-600 mb-4">📍 {{ evento.lugar }}</p>
-          <a href="{% url 'comprar_boleto' evento.id %}" class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
-            Comprar boletos
+
+          <!-- Botón me gusta -->
+          <form action="{% url 'evento_favorito' evento.id %}" method="post" class="inline-block mr-2">
+            {% csrf_token %}
+            <button type="submit" 
+                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+              ❤️ Me gusta
+            </button>
+          </form>
+
+          <!-- Botón ver detalles -->
+          <a href="{% url 'detalle_evento_asistente' evento.id %}" 
+             class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+             🔍 Ver detalles
           </a>
         </div>
       {% endfor %}

@@ -1,0 +1,63 @@
+{% extends 'partials/base.html' %}
+{% block title %}Logs del sistema{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10">
+  <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">📜 Logs del sistema</h2>
+
+  <!-- Vista en tabla para pantallas grandes -->
+  <div class="hidden md:block bg-white shadow-md rounded-lg p-6 overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-2 text-left font-semibold text-gray-600">Fecha</th>
+          <th class="px-4 py-2 text-left font-semibold text-gray-600">Nivel</th>
+          <th class="px-4 py-2 text-left font-semibold text-gray-600">Mensaje</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {% for log in logs %}
+          <tr>
+            <td class="px-4 py-2 text-gray-700">{{ log.fecha }}</td>
+            <td class="px-4 py-2">
+              {% if log.nivel == "ERROR" %}
+                <span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-bold">{{ log.nivel }}</span>
+              {% elif log.nivel == "WARNING" %}
+                <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-bold">{{ log.nivel }}</span>
+              {% else %}
+                <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">{{ log.nivel }}</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-2 text-gray-700 break-words">{{ log.mensaje }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3" class="px-4 py-4 text-center text-gray-400">No hay logs disponibles</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Vista en cards para pantallas pequeñas -->
+  <div class="md:hidden space-y-4">
+    {% for log in logs %}
+      <div class="bg-white shadow-md rounded-lg p-4">
+        <p class="text-xs text-gray-500">{{ log.fecha }}</p>
+        <p class="mt-1">
+          {% if log.nivel == "ERROR" %}
+            <span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-bold">{{ log.nivel }}</span>
+          {% elif log.nivel == "WARNING" %}
+            <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-bold">{{ log.nivel }}</span>
+          {% else %}
+            <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">{{ log.nivel }}</span>
+          {% endif %}
+        </p>
+        <p class="mt-2 text-gray-700 text-sm break-words">{{ log.mensaje }}</p>
+      </div>
+    {% empty %}
+      <p class="text-center text-gray-400">No hay logs disponibles</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

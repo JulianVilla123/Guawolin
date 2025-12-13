@@ -1,0 +1,57 @@
+{% extends 'partials/base.html' %}
+{% block title %}API Docs{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10">
+  <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">📖 API Docs</h2>
+
+  <!-- Vista en tabla para pantallas grandes -->
+  <div class="hidden md:block bg-white shadow-md rounded-lg p-6 overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-2 text-left font-semibold text-gray-600">Método</th>
+          <th class="px-4 py-2 text-left font-semibold text-gray-600">Ruta</th>
+          <th class="px-4 py-2 text-left font-semibold text-gray-600">Descripción</th>
+          <th class="px-4 py-2 text-left font-semibold text-gray-600">Ejemplo</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {% for ep in endpoints %}
+          <tr>
+            <td class="px-4 py-2 font-bold">{{ ep.method }}</td>
+            <td class="px-4 py-2 text-indigo-600">{{ ep.path }}</td>
+            <td class="px-4 py-2 text-gray-700">{{ ep.desc }}</td>
+            <td class="px-4 py-2 text-gray-500">
+              {% if ep.example %}
+                <pre class="bg-gray-100 p-2 rounded text-xs whitespace-pre-wrap">{{ ep.example }}</pre>
+              {% else %}
+                —
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="px-4 py-4 text-center text-gray-400">No hay endpoints documentados</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Vista en cards para pantallas pequeñas -->
+  <div class="md:hidden space-y-4">
+    {% for ep in endpoints %}
+      <div class="bg-white shadow-md rounded-lg p-4">
+        <p class="text-sm font-bold">{{ ep.method }} <span class="text-indigo-600">{{ ep.path }}</span></p>
+        <p class="mt-1 text-gray-700">{{ ep.desc }}</p>
+        {% if ep.example %}
+          <pre class="mt-2 bg-gray-100 p-2 rounded text-xs whitespace-pre-wrap">{{ ep.example }}</pre>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p class="text-center text-gray-400">No hay endpoints documentados</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

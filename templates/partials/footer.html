@@ -1,15 +1,15 @@
-<footer class="bg-gray-900 text-gray-300 py-8 mt-12">
+<footer class="bg-gray-900 text-gray-300 py-10 mt-12">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+    <div class="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
 
       <!-- Información de marca -->
       <div class="text-center md:text-left">
-        <h2 class="text-lg font-semibold text-white">Fiestapp</h2>
+        <h2 class="text-xl font-semibold text-white">Fiestapp</h2>
         <p class="text-sm text-gray-400">Tu plataforma para eventos inolvidables.</p>
       </div>
 
       <!-- Enlaces rápidos -->
-      <div class="flex space-x-6">
+      <div class="flex flex-wrap justify-center md:justify-end gap-6 text-sm">
         {% if not user.is_authenticated %}
           <a href="{% url 'home' %}" class="hover:text-white transition">Inicio</a>
           <a href="{% url 'register_organizer' %}" class="hover:text-white transition">¿Quieres ser Organizador?</a>
@@ -27,8 +27,9 @@
     </div>
 
     <!-- Línea divisoria -->
-    <div class="border-t border-gray-700 mt-6 pt-4 text-center text-sm text-gray-500">
-      © 2025 Jose Julian Roque Villa — Todos los derechos reservados.
+    <div class="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-500 space-y-1">
+      <p>© 2025 Ivan Ernesto Rodríguez Mendoza — Todos los derechos reservados.</p>
+      <p>© 2025 Jose Julian Roque Villa — Todos los derechos reservados.</p>
     </div>
   </div>
 </footer>

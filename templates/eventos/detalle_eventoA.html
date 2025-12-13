@@ -1,0 +1,105 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block title %}Detalle del evento{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/detalle_evento.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="evento-detalle-wrapper max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">{{ evento.titulo }}</h2>
+  <p class="text-sm text-gray-600 mb-2">📅 {{ evento.fecha|date:"d M Y H:i" }}</p>
+  <p class="text-sm text-gray-600 mb-2">📍 {{ evento.lugar }}</p>
+  <p class="text-base text-gray-700 mb-6">{{ evento.descripcion }}</p>
+
+  <!-- Botón que abre el modal -->
+  <button id="openModalBtn"
+          class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
+    Comprar boletos
+  </button>
+
+  <!-- Modal -->
+  <div id="paymentModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+      <button id="closeModalBtn" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✖</button>
+      <h3 class="text-xl font-bold mb-4">Finalizar compra</h3>
+
+      <!-- Formulario Stripe Elements -->
+      <form id="payment-form">
+        <label for="cantidad" class="block text-gray-700 font-medium mb-2">Cantidad de boletos:</label>
+        <input type="number" id="cantidad" name="cantidad" min="1" value="1"
+               class="border rounded px-3 py-2 w-24 mb-4">
+
+        <div id="payment-element"><!-- Stripe Elements se monta aquí --></div>
+
+        <button id="submit" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
+          Pagar ahora
+        </button>
+      </form>
+
+      <div id="error-message" class="text-red-500 mt-2"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+const stripe = Stripe("{{ STRIPE_PUBLISHABLE_KEY }}");
+let elements;
+let paymentElement;
+
+const modal = document.getElementById("paymentModal");
+document.getElementById("openModalBtn").onclick = async () => {
+  modal.classList.remove("hidden");
+  await initStripe(); // inicializa al abrir el modal con la cantidad por defecto
+};
+document.getElementById("closeModalBtn").onclick = () => modal.classList.add("hidden");
+
+async function initStripe() {
+  const cantidad = document.getElementById("cantidad").value;
+  const response = await fetch("{% url 'create_payment_intent' evento.id %}", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({cantidad: cantidad})
+  });
+
+  const data = await response.json();
+  if (data.error) {
+    document.getElementById("error-message").textContent = data.error;
+    return;
+  }
+
+  // Si ya había un elemento montado, desmontarlo antes de montar uno nuevo
+  if (paymentElement) {
+    paymentElement.unmount();
+  }
+
+  elements = stripe.elements({clientSecret: data.clientSecret});
+  paymentElement = elements.create("payment");
+  paymentElement.mount("#payment-element");
+}
+
+// 👇 cada vez que cambie la cantidad, se recrea el PaymentIntent
+document.getElementById("cantidad").addEventListener("change", initStripe);
+
+const form = document.getElementById("payment-form");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const {error, paymentIntent} = await stripe.confirmPayment({
+    elements,
+    redirect: "if_required"
+  });
+
+  if (error) {
+    document.getElementById("error-message").textContent = error.message;
+  } else if (paymentIntent && paymentIntent.status === "succeeded") {
+    window.location.href = "{% url 'mis_tickets' %}?success=1";
+  }
+});
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block title %}Mis favoritos ❤️{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/eventos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="favoritos-wrapper max-w-6xl mx-auto">
+  <h2 class="text-3xl font-extrabold text-pink-600 mb-8 text-center">
+    ✨ Mis eventos favoritos ✨
+  </h2>
+
+  {% if favoritos %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for fav in favoritos %}
+        <div class="border-4 border-pink-500 rounded-xl p-6 shadow-lg bg-white transform hover:scale-105 transition duration-300">
+          <!-- Título -->
+          <h3 class="text-2xl font-bold text-gray-900 mb-3">{{ fav.evento.titulo }}</h3>
+
+          <!-- Info -->
+          <p class="text-sm text-gray-600 mb-1">📅 {{ fav.evento.fecha|date:"d M Y H:i" }}</p>
+          <p class="text-sm text-gray-600 mb-3">📍 {{ fav.evento.lugar }}</p>
+
+          <!-- Descripción corta -->
+          <p class="text-gray-700 mb-4 line-clamp-3">{{ fav.evento.descripcion }}</p>
+
+          <!-- Botones -->
+          <div class="flex justify-between items-center">
+            <!-- Ver detalles -->
+            <a href="{% url 'detalle_evento_asistente' fav.evento.id %}" 
+               class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow">
+               🔍 Ver detalles
+            </a>
+
+            <!-- Quitar de favoritos -->
+            <form action="{% url 'eliminar_favorito' fav.evento.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" 
+                      class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow">
+                💔 Quitar
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center mt-12">
+      <p class="text-xl text-gray-600">Todavía no tienes eventos favoritos ❤️</p>
+      <a href="{% url 'eventos_disponibles' %}" 
+         class="mt-4 inline-block bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-lg shadow">
+         Explorar eventos
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

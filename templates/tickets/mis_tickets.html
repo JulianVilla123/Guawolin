@@ -4,21 +4,204 @@
 {% block content %}
 <h2 class="text-2xl font-bold mb-4">Mis Tickets</h2>
 
-{% if boletos %}
+{% if success %}
+  <div class="mb-4 p-3 rounded bg-green-100 text-green-800">
+     ¡Boletos comprados con éxito! Aquí están tus tickets:
+  </div>
+{% endif %}
+
+{% if eventos_dict %}
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {% for boleto in boletos %}
-      <div class="boleto-card p-4 border border-dashed rounded-lg shadow-sm">
-        <h4 class="text-lg font-semibold">{{ boleto.evento.titulo }}</h4>
-        <p><strong>Código:</strong> {{ boleto.codigo_unico }}</p>
-        <p><strong>Fecha:</strong> {{ boleto.evento.fecha|date:"d M Y H:i" }}</p>
-        <p><strong>Lugar:</strong> {{ boleto.evento.lugar }}</p>
-        <p><strong>Cantidad:</strong> {{ boleto.cantidad }}</p>
-        <p><strong>Total pagado:</strong> ${{ boleto.total }}</p>
-        <a href="{% url 'boleto_detalle' boleto.id %}" class="btn btn-primary">Ver boleto</a>
+    {% for evento_id, data in eventos_dict.items %}
+      <div class="p-4 border border-dashed rounded-lg shadow-sm bg-white">
+        <!-- Datos del evento -->
+        <h4 class="text-lg md:text-xl font-semibold text-indigo-700">{{ data.evento.titulo }}</h4>
+        <p class="text-gray-700"><strong>Fecha:</strong> {{ data.evento.fecha|date:"d M Y H:i" }}</p>
+        <p class="text-gray-700"><strong>Lugar:</strong> {{ data.evento.lugar }}</p>
+        <p class="text-gray-700"><strong>Total tickets:</strong> {{ data.tickets|length }}</p>
+
+        <!-- Desglose por estado -->
+        <ul class="text-sm mt-2 text-gray-600">
+          <li>🎟️ Activos: {{ data.conteo.activo }}</li>
+          <li>✅ Usados: {{ data.conteo.usado }}</li>
+          <li>⌛ Expirados: {{ data.conteo.expirado }}</li>
+          <li>🔄 Transferidos: {{ data.conteo.transferido }}</li>
+        </ul>
+
+<!-- Tickets individuales -->
+<div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  {% for ticket in data.tickets %}
+    <div class="border p-3 rounded bg-gray-50">
+      <p class="font-semibold text-gray-800">
+        <strong>Código:</strong> {{ ticket.codigo_unico }}
+      </p>
+
+      {% if ticket.estado == "transferido" %}
+        {% if ticket.transferido_email %}
+          <!-- Transferido por correo -->
+          <p class="text-xs text-purple-600">
+            Estado: Transferido por correo ({{ ticket.transferido_email }})<br>
+            Fecha: {{ ticket.fecha_transferencia|date:"d M Y H:i" }}
+          </p>
+        {% elif ticket.transferido_a == request.user and ticket.transferido_por %}
+          <!-- Receptor ve activo -->
+          <p class="text-xs text-green-600">
+            {{ ticket.transferido_por.username }} te transfirió este boleto<br>
+            Estado del boleto: Activo
+          </p>
+
+          <img src="{{ ticket.qr_image.url }}" alt="QR del ticket"
+               class="mt-2 w-32 h-32 md:w-40 md:h-40 mx-auto rounded shadow">
+
+          {% if ticket.usuario == request.user %}
+            <button onclick="openModal('usuarioModal{{ ticket.id }}')" 
+                    class="w-full mt-2 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+              Transferir a usuario Fiestapp
+            </button>
+            <button onclick="openModal('correoModal{{ ticket.id }}')" 
+                    class="w-full mt-2 px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+              Enviar por correo
+            </button>
+          {% endif %}
+        {% else %}
+          <!-- Comprador original ve transferido -->
+          <p class="text-xs text-blue-600">
+            Ticket transferido a {{ ticket.transferido_a.username }} por {{ ticket.transferido_por.username }}<br>
+            Fecha: {{ ticket.fecha_transferencia|date:"d M Y H:i" }}
+          </p>
+        {% endif %}
+      {% elif ticket.estado == "activo" %}
+        {% if ticket.transferido_a == request.user and ticket.transferido_por %}
+          <!-- Receptor ve activo -->
+          <p class="text-xs text-green-600">
+            {{ ticket.transferido_por.username }} te transfirió este boleto<br>
+            Estado: Activo
+          </p>
+        {% else %}
+          <p class="text-xs text-gray-500">Estado: Activo</p>
+        {% endif %}
+
+        <img src="{{ ticket.qr_image.url }}" alt="QR del ticket"
+             class="mt-2 w-32 h-32 md:w-40 md:h-40 mx-auto rounded shadow">
+
+        {% if ticket.usuario == request.user %}
+          <button onclick="openModal('usuarioModal{{ ticket.id }}')" 
+                  class="w-full mt-2 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+            Transferir a usuario Fiestapp
+          </button>
+          <button onclick="openModal('correoModal{{ ticket.id }}')" 
+                  class="w-full mt-2 px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+            Enviar por correo
+          </button>
+        {% endif %}
+      {% endif %}
+    </div>
+
+
+            <!-- Modal para transferir a usuario -->
+            <div id="usuarioModal{{ ticket.id }}" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div class="bg-white p-6 rounded shadow-lg w-96">
+                <h3 class="text-lg font-bold mb-4">Transferir a usuario Fiestapp</h3>
+                <div id="usuarioMsg{{ ticket.id }}" class="mb-2"></div>
+                <form id="usuarioForm{{ ticket.id }}" method="POST" action="{% url 'transferir_ticket_usuario' ticket.id %}">
+                  {% csrf_token %}
+                  <input type="text" name="username" placeholder="Username destino" required
+                         class="w-full px-3 py-2 border rounded mb-4">
+                  <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('usuarioModal{{ ticket.id }}')" 
+                            class="px-4 py-2 bg-gray-300 rounded">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Transferir</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Modal para transferir por correo -->
+            <div id="correoModal{{ ticket.id }}" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div class="bg-white p-6 rounded shadow-lg w-96">
+                <h3 class="text-lg font-bold mb-4">Enviar por correo</h3>
+                <div id="correoMsg{{ ticket.id }}" class="mb-2"></div>
+                <form id="correoForm{{ ticket.id }}" method="POST" action="{% url 'transferir_ticket_correo' ticket.id %}">
+                  {% csrf_token %}
+                  <input type="email" name="email" placeholder="Correo destino" required
+                         class="w-full px-3 py-2 border rounded mb-4">
+                  <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('correoModal{{ ticket.id }}')" 
+                            class="px-4 py-2 bg-gray-300 rounded">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Enviar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          {% endfor %}
+        </div>
       </div>
     {% endfor %}
   </div>
 {% else %}
   <p class="text-gray-600">No has comprado boletos todavía.</p>
 {% endif %}
+
+<script>
+function openModal(id) {
+  document.getElementById(id).classList.remove("hidden");
+}
+function closeModal(id) {
+  document.getElementById(id).classList.add("hidden");
+}
+
+// AJAX para formularios de usuario y correo
+document.addEventListener("DOMContentLoaded", function() {
+  // Usuario
+  document.querySelectorAll("form[id^='usuarioForm']").forEach(form => {
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      let ticketId = form.id.replace("usuarioForm","");
+      let msgBox = document.getElementById("usuarioMsg" + ticketId);
+      msgBox.innerHTML = "";
+
+      fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: {"X-Requested-With": "XMLHttpRequest"}
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          msgBox.innerHTML = `<div class="p-2 bg-green-100 text-green-700 rounded">${data.message}</div>`;
+          setTimeout(() => closeModal("usuarioModal" + ticketId), 2000);
+        } else {
+          msgBox.innerHTML = `<div class="p-2 bg-red-100 text-red-700 rounded">${data.message}</div>`;
+        }
+      });
+    });
+  });
+
+  // Correo
+  document.querySelectorAll("form[id^='correoForm']").forEach(form => {
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      let ticketId = form.id.replace("correoForm","");
+      let msgBox = document.getElementById("correoMsg" + ticketId);
+      msgBox.innerHTML = "";
+
+      fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: {"X-Requested-With": "XMLHttpRequest"}
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          msgBox.innerHTML = `<div class="p-2 bg-green-100 text-green-700 rounded">${data.message}</div>`;
+          setTimeout(() => closeModal("correoModal" + ticketId), 2000);
+        } else {
+          msgBox.innerHTML = `<div class="p-2 bg-red-100 text-red-700 rounded">${data.message}</div>`;
+        }
+      }); 
+    });
+  });
+});
+</script>
 {% endblock %}

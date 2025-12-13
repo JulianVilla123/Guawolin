@@ -1,31 +1,90 @@
 {% extends 'partials/base.html' %}
-{% load static %}
+{% block title %}Panel del Asistente{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <h2>🎟️ Eventos disponibles</h2>
-  <a href="{% url 'mis_boletos' %}" class="btn btn-outline-secondary mt-3">Ver mis boletos</a>
-  {% if eventos %}
-    <div class="row">
-      {% for evento in eventos %}
-        <div class="col-md-6 mb-4">
-          <div class="card h-100">
-            {% if evento.imagen %}
-              <img src="{{ evento.imagen.url }}" class="card-img-top" alt="{{ evento.titulo }}">
-            {% endif %}
-            <div class="card-body">
-              <h5 class="card-title">{{ evento.titulo }}</h5>
-              <p class="card-text">{{ evento.descripcion|truncatewords:20 }}</p>
-              <p><strong>Fecha:</strong> {{ evento.fecha|date:"d M Y H:i" }}</p>
-              <p><strong>Lugar:</strong> {{ evento.lugar }}</p>
-              <a href="{% url 'comprar_boleto' evento.id %}" class="btn btn-primary">Comprar boleto</a>
-            </div>
-          </div>
+<div class="max-w-6xl mx-auto mt-10 px-4">
+  <h2 class="text-3xl font-extrabold text-indigo-700 mb-6">🎟️ Dashboard del asistente</h2>
+
+  <!-- Métricas rápidas -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="bg-white shadow rounded-lg p-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-700">Boletos comprados este mes</h3>
+      <p class="text-3xl font-bold text-indigo-600">{{ total_boletos_comprados }}</p>
+    </div>
+    <div class="bg-white shadow rounded-lg p-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-700">Boletos transferidos recibidos</h3>
+      <p class="text-3xl font-bold text-yellow-500">{{ total_boletos_transferidos }}</p>
+    </div>
+    <div class="bg-white shadow rounded-lg p-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-700">Dinero gastado este mes</h3>
+      <p class="text-3xl font-bold text-green-600">${{ total_gasto|floatformat:2 }}</p>
+    </div>
+  </div>
+
+  <!-- Gráfica -->
+  <div class="bg-white shadow rounded-lg p-6 mb-10">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">Resumen mensual</h3>
+    <canvas id="ticketsChart" height="100"></canvas>
+  </div>
+
+  <!-- Incidencias del usuario -->
+  {% if incidencias %}
+  <div class="bg-white shadow rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">Mis incidencias</h3>
+    <div class="space-y-4">
+      {% for incidencia in incidencias %}
+      <div class="border border-gray-200 rounded-md p-4">
+        <h4 class="text-md font-bold text-gray-800">{{ incidencia.titulo }}</h4>
+        <p class="text-sm text-gray-600">{{ incidencia.descripcion }}</p>
+        <p class="text-sm mt-2 font-semibold 
+                   {% if incidencia.estado == 'pendiente' %}text-red-600
+                   {% elif incidencia.estado == 'proceso' %}text-yellow-600
+                   {% else %}text-green-600{% endif %}">
+          Estado: {{ incidencia.estado }}
+        </p>
+        <p class="text-xs text-gray-500">Creada el {{ incidencia.fecha_creacion|date:"d/m/Y H:i" }}</p>
+
+        <!-- Mostrar respuesta de soporte si existe -->
+        {% if incidencia.respuesta %}
+        <div class="mt-3 p-3 bg-green-50 border border-green-200 rounded">
+          <p class="text-sm text-gray-700">
+            <strong>Respuesta de soporte:</strong> {{ incidencia.respuesta }}
+          </p>
+          {% if incidencia.asignado_a %}
+          <p class="text-xs text-gray-500">Atendida por: {{ incidencia.asignado_a.username }}</p>
+          {% endif %}
         </div>
+        {% endif %}
+      </div>
       {% endfor %}
     </div>
-  {% else %}
-    <div class="alert alert-info">No hay eventos disponibles en este momento.</div>
+  </div>
   {% endif %}
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('ticketsChart').getContext('2d');
+  const ticketsChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Comprados', 'Transferidos', 'Gasto'],
+      datasets: [{
+        label: 'Resumen del mes',
+        data: [
+          {{ total_boletos_comprados }},
+          {{ total_boletos_transferidos }},
+          {{ total_gasto|default:0 }}
+        ],
+        backgroundColor: ['#6366F1', '#F59E0B', '#10B981']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
 {% endblock %}

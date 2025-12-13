@@ -1,0 +1,39 @@
+{% extends 'partials/base.html' %}
+{% block title %}Panel del Desarrollador{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10">
+  <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">🛠️ Panel del Desarrollador</h2>
+
+  <!-- Logs -->
+  <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">Últimos logs</h3>
+    <div class="bg-gray-100 rounded p-4 text-sm text-gray-700 overflow-x-auto max-h-64">
+      <pre class="whitespace-pre-wrap break-words">
+{{ logs }}
+      </pre>
+    </div>
+  </div>
+
+  <!-- Estado de servicios -->
+  <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">Estado de servicios externos</h3>
+    <ul class="space-y-2 text-gray-700">
+      <li>💳 Pasarela de pagos (Stripe): {{ estado_pagos }}</li>
+      <li>📧 Correo SMTP: {{ estado_correo }}</li>
+    </ul>
+  </div>
+
+  <!-- Incidencias -->
+  <div class="bg-white shadow-md rounded-lg p-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">Incidencias abiertas</h3>
+    <div class="space-y-2">
+      {% for incidencia in incidencias %}
+        <p class="text-gray-700">🔧 {{ incidencia.descripcion }}</p>
+      {% empty %}
+        <p class="text-gray-400">No hay incidencias abiertas 🎉</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

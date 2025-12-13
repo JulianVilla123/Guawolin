@@ -1,0 +1,12 @@
+{% extends 'partials/base.html' %}
+{% block title %}Pago cancelado{% endblock %}
+
+{% block content %}
+<div class="p-6 border rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold mb-4 text-red-600">❌ Pago cancelado</h2>
+  <p>Tu compra fue cancelada. No se generaron boletos.</p>
+  <a href="{% url 'eventos_disponibles' %}" class="btn btn-primary mt-4">
+    Ver eventos disponibles
+  </a>
+</div>
+{% endblock %}

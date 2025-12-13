@@ -5,15 +5,15 @@ from django.contrib.auth import views as auth_views
 from tickets import views
 from django.conf import settings
 from django.conf.urls.static import static
+from tickets.views import CustomLoginView
 
 urlpatterns = [
     path('', views.home, name='home'), # ✅ Esto conecta la raíz con la vista 'home'
     path('home/', views.home, name='home'),  # Esto hace que la raíz muestre tu pantalla principal
     path('admin/', admin.site.urls),
-    path('eventos/', views.events, name='events'),
+    path('eventos/', views.eventos_disponibles, name='eventos_disponibles'),  # Vista para asistentes
     path('tickets/', include('tickets.urls')),
-    path('login/', auth_views.LoginView.as_view(template_name='guawolin/login.html'), name='login'),
-    path('profile/', views.profile_settings, name='profile_settings'),
+    path('login/', CustomLoginView.as_view(), name='login'),    path('profile/', views.profile_settings, name='profile_settings'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path("como-usar/", views.como_usar_fiestapp, name="como_usar"),
 ]

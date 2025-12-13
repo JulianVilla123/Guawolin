@@ -1,0 +1,62 @@
+{% extends 'partials/base.html' %}
+{% block title %}Configuración de Perfil{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
+  <h2 class="text-2xl font-bold mb-6 text-indigo-600">Configuración de Perfil</h2>
+
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
+
+    <!-- Nombre de usuario -->
+    <div>
+      <label class="block text-gray-700 font-medium mb-1">Nombre de usuario</label>
+      <input type="text" name="username" value="{{ request.user.username }}"
+             class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-indigo-300"/>
+    </div>
+
+    <!-- Correo electrónico -->
+    <div>
+      <label class="block text-gray-700 font-medium mb-1">Correo electrónico</label>
+      <input type="email" name="email" value="{{ request.user.email }}"
+             class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-indigo-300"/>
+    </div>
+
+    <!-- Nombre -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Nombre</label>
+        <input type="text" name="first_name" value="{{ request.user.first_name }}"
+               class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-indigo-300"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Apellido</label>
+        <input type="text" name="last_name" value="{{ request.user.last_name }}"
+               class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-indigo-300"/>
+      </div>
+    </div>
+
+    <!-- Contraseña -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Nueva contraseña</label>
+        <input type="password" name="password1"
+               class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-indigo-300"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Confirmar contraseña</label>
+        <input type="password" name="password2"
+               class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-indigo-300"/>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex justify-end gap-4">
+      <a href="{% url 'home' %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar</a>
+      <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-800">
+        Guardar cambios
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

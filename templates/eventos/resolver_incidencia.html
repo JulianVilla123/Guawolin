@@ -1,0 +1,30 @@
+{% extends 'partials/base.html' %}
+{% block title %}Resolver incidencia{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10 bg-white shadow rounded-lg p-6">
+  <h2 class="text-2xl font-bold text-indigo-700 mb-4">Resolver incidencia</h2>
+
+  <p class="mb-4"><strong>Título:</strong> {{ incidencia.titulo }}</p>
+  <p class="mb-4"><strong>Descripción:</strong> {{ incidencia.descripcion }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700">Respuesta</label>
+      <textarea name="respuesta" rows="4" class="mt-1 block w-full border rounded-md p-2"></textarea>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700">Estado</label>
+      <select name="estado" class="mt-1 block w-full border rounded-md p-2">
+        <option value="pendiente">Pendiente</option>
+        <option value="proceso">En proceso</option>
+        <option value="resuelto" selected>Resuelto</option>
+      </select>
+    </div>
+
+    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md">Actualizar</button>
+  </form>
+</div>
+{% endblock %}

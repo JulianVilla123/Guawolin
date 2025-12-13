@@ -16,3 +16,27 @@ def solo_organizadores(view_func):
             return view_func(request, *args, **kwargs)
         return redirect('no_autorizado')
     return _wrapped_view
+
+def solo_administradores(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated and getattr(request.user, 'rol', None) == 'administrador':
+            return view_func(request, *args, **kwargs)
+        return redirect('no_autorizado')
+    return _wrapped_view
+
+def solo_desarrolladores(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated and getattr(request.user, 'rol', None) == 'desarrollador':
+            return view_func(request, *args, **kwargs)
+        return redirect('no_autorizado')
+    return _wrapped_view
+
+def solo_soporte(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated and getattr(request.user, 'rol', None) == 'soporte':
+            return view_func(request, *args, **kwargs)
+        return redirect('no_autorizado')
+    return _wrapped_view

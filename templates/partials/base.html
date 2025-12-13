@@ -3,38 +3,41 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>{% block title %}Villa{% endblock %}</title>
+  <title>{% block title %}Fiestapp{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- CSS principal -->
+  <!-- Estilos globales -->
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
-
-  <!-- Paneles y módulos -->
-  <link rel="stylesheet" href="{% static 'css/panel_asistente.css' %}">
-  <link rel="stylesheet" href="{% static 'css/panel_organizador.css' %}">
-  <link rel="stylesheet" href="{% static 'css/detalle_evento.css' %}">
-  <link rel="stylesheet" href="{% static 'css/comprar_boleto.css' %}">
-  <link rel="stylesheet" href="{% static 'css/boleto_detalle.css' %}">
-  <link rel="stylesheet" href="{% static 'css/reporte_evento.css' %}">
-  <link rel="stylesheet" href="{% static 'css/como_usar.css' %}">
-
   {% block extra_css %}{% endblock %}
 </head>
-<body class="{% block body_class %}default-bg{% endblock %}">
+<body class="bg-gray-50 text-gray-800 font-sans {% block body_class %}{% endblock %}">
 
-  <!-- Navbar -->
-  {% include 'partials/navbar.html' %}
+  <!-- Navbar fijo -->
+  <header class="shadow bg-white fixed w-full z-50">
+    {% include 'partials/navbar.html' %}
+  </header>
 
-  <!-- Contenido principal -->
-  <main class="container mx-auto px-4 py-6">
+  <!-- Contenido principal con padding-top para no quedar debajo del navbar -->
+  <main class="pt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     {% block content %}{% endblock %}
   </main>
 
   <!-- Footer -->
-  {% include 'partials/footer.html' %}
+  <footer class="bg-gray-900 text-gray-300 mt-12">
+    {% include 'partials/footer.html' %}
+  </footer>
+
+  <!-- Botón flotante de soporte -->
+  {% if user.is_authenticated and user.rol in "asistente,organizador,administrador" %}
+    <a href="{% url 'crear_incidencia' %}"
+       class="fixed bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center text-2xl font-bold transition"
+       title="Levantar incidencia">
+      🛠️
+    </a>
+  {% endif %}
 
   {% block extra_js %}{% endblock %}
 </body>

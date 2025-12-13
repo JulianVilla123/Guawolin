@@ -1,0 +1,48 @@
+{% extends 'partials/base.html' %}
+{% block title %}Panel de Soporte{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto mt-10 px-4">
+  <h2 class="text-3xl font-extrabold text-indigo-700 mb-6">🛠️ Dashboard de soporte</h2>
+
+  <!-- Métricas rápidas -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="bg-white shadow rounded-lg p-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-700">Incidencias pendientes</h3>
+      <p class="text-3xl font-bold text-red-600">{{ incidencias_soporte.count }}</p>
+    </div>
+  </div>
+
+  <!-- Lista de incidencias -->
+  {% if incidencias_soporte %}
+  <div class="bg-white shadow rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">Incidencias pendientes</h3>
+    <div class="space-y-4">
+      {% for incidencia in incidencias_soporte %}
+      <div class="border border-gray-200 rounded-md p-4">
+        <h4 class="text-md font-bold text-gray-800">{{ incidencia.titulo }}</h4>
+        <p class="text-sm text-gray-600">{{ incidencia.descripcion }}</p>
+        <p class="text-xs text-gray-500">Usuario: {{ incidencia.usuario.username }}</p>
+        <p class="text-xs text-gray-500">Creada el {{ incidencia.fecha_creacion|date:"d/m/Y H:i" }}</p>
+        <span class="inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-600">
+          {{ incidencia.estado }}
+        </span>
+
+        <!-- Botón para resolver incidencia -->
+        <div class="mt-4">
+          <a href="{% url 'resolver_incidencia' incidencia.id %}" 
+             class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+             Resolver incidencia
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
+  <div class="bg-white shadow rounded-lg p-6 text-center">
+    <p class="text-gray-500">No hay incidencias pendientes en este momento.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

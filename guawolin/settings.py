@@ -14,12 +14,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w=3c_408y36j@_&74h)5r-_-o4*(&)ko))gm5qe#^1!e^6h16&'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+
+STRIPE_ENV = os.getenv("STRIPE_ENV")
+
+if STRIPE_ENV == "live":
+    STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY_LIVE")
+    STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY_LIVE")
+    STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET_LIVE")
+else:
+    STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY_TEST")
+    STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY_TEST")
+    STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET_TEST")
+
 
 
 # Application definition
@@ -127,3 +139,49 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Configuración de correo con Gmail
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "fiestapp117@gmail.com")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # tu App Password de Gmail
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Configuración de logs
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "handlers": {
+        "file": {
+            "level": "INFO",  # <-- evita spam de DEBUG
+            "class": "logging.FileHandler",
+            "filename": BASE_DIR / "logs/django.log",
+        },
+        "console": {
+            "level": "INFO",  # <-- evita spam en consola
+            "class": "logging.StreamHandler",
+        },
+    },
+
+    "loggers": {
+        # Logger de Django (solo INFO+)
+        "django": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+
+        # Logger de tu proyecto (DEBUG permitido)
+        "guawolin": {  # <-- usa el nombre de tu proyecto
+            "handlers": ["file", "console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
+}
