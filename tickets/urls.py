@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     # --- Rutas generales ---
     path("buscar/", views.buscar_evento, name="buscar_evento"),
